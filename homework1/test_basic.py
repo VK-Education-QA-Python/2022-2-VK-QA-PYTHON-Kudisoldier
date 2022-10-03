@@ -1,8 +1,8 @@
 import pytest
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 import time
+import locators
 
 
 class element_position_fixed(object):
@@ -32,14 +32,13 @@ def test_login(session):
 
 def test_logout(session):
     account = WebDriverWait(session, 30).until(
-        EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'right-module-rightButton')]"))
+        EC.element_to_be_clickable(locators.ACCOUNT_BUTTON)
     )
     account.click()
 
     # set low poll_frequency to detect animation
     logout_button = WebDriverWait(session, 30, poll_frequency=0.05).until(
-        element_position_fixed((By.XPATH,
-                                    "//a[contains(@class, 'rightMenu-module-rightMenuLink') and @href = '/logout']"))
+        element_position_fixed(locators.LOGOUT_BUTTON)
     )
     logout_button.click()
 
