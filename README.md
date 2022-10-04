@@ -4,5 +4,5 @@
 Steps to run homework1:
 ```
 cd homework 1
-pytest --headless
+pytest -vs -m UI --headless
 ```
