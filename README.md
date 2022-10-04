@@ -12,4 +12,4 @@ Contents:
 - logout test
 - 2 login negative test
 - change contacts test
-- parametrized menu page click
+- 2 parametrized menu page navigation

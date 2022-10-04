@@ -14,3 +14,6 @@ INN_INPUT = (By.XPATH, "//div[@data-name='ordInn' and @data-class-name='Input']/
 PHONE_INPUT = (By.XPATH, "//div[@data-name='phone' and @data-class-name='Input']//input")
 SUBMIT_BUTTON = (By.XPATH, "//button[@data-class-name='Submit']")
 SUCCESS_NOTIFICATION = (By.XPATH, "//div[@data-class-name='SuccessView']")
+SEGMENTS_BUTTON = (By.XPATH, "//a[contains(@class, 'center-module-segments')]")
+BALANCE_BUTTON = (By.XPATH, "//a[contains(@class, 'center-module-billing')]")
+DEPOSIT_BUTTON = (By.XPATH, "//input[contains(@class, 'js-deposit-payment-submit')]")

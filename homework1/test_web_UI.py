@@ -2,9 +2,30 @@ import pytest
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 import locators
-from conftest import login_with_credentials, element_position_fixed
 import string
 import random
+
+
+class element_position_fixed(object):
+  """An expectation for checking that an element has a fixed position.
+
+  locator - used to find the element
+  retries - used to define how many retries element should not move
+  returns the WebElement once it is not moving
+  """
+  def __init__(self, locator):
+    self.locator = locator
+    self.prev_pos = None
+
+  def __call__(self, driver):
+    element = driver.find_element(*self.locator)   # Finding the referenced element
+    pos = element.rect
+
+    if pos != self.prev_pos:   # Compare previous and current positions
+        self.prev_pos = pos
+        return False
+    else:  # pos == prev_pos and counter >= retries
+        return element
 
 
 @pytest.mark.UI
@@ -28,7 +49,7 @@ def test_logout(session):
 
     # set low poll_frequency to detect animation
     logout_button = WebDriverWait(session, 30, poll_frequency=0.05).until(
-        element_position_fixed(locators.LOGOUT_BUTTON)
+        element_position_fixed(locators.LOGOUT_BUTTON)  # use custom wait class
     )
     logout_button.click()
 
@@ -37,16 +58,18 @@ def test_logout(session):
 
 @pytest.mark.UI
 @pytest.mark.negative
-def test_login_wrong_credentials(driver):
-    login_with_credentials(driver, 'abc@mail.ru', 'b')
-    driver.find_element(*locators.WRONG_CREDENTIALS_ERROR)
+@pytest.mark.session_login('abc@mail.ru')
+@pytest.mark.session_password('b')
+def test_login_wrong_credentials(session):
+    session.find_element(*locators.WRONG_CREDENTIALS_ERROR)
 
 
 @pytest.mark.UI
 @pytest.mark.negative
-def test_login_forbidden_credentials(driver):
-    login_with_credentials(driver, 'a', 'b')
-    driver.find_element(*locators.FORBIDDEN_CREDENTIALS_ERROR)
+@pytest.mark.session_login('a')
+@pytest.mark.session_password('b')
+def test_login_forbidden_credentials(session):
+    session.find_element(*locators.FORBIDDEN_CREDENTIALS_ERROR)
 
 
 @pytest.mark.UI
@@ -75,3 +98,19 @@ def test_change_contacts(session):
         EC.visibility_of_element_located(locators.SUCCESS_NOTIFICATION)
     )
 
+
+@pytest.mark.UI
+@pytest.mark.positive
+@pytest.mark.parametrize("input_button,expected_element", [
+                        (locators.SEGMENTS_BUTTON, locators.GETTING_STARTED_TITLE),
+                        (locators.BALANCE_BUTTON, locators.DEPOSIT_BUTTON)
+])
+def test_page_navigation(input_button, expected_element, session):
+    button = WebDriverWait(session, 30).until(
+        EC.element_to_be_clickable(input_button)
+    )
+    button.click()
+
+    WebDriverWait(session, 30).until(
+        EC.visibility_of_element_located(expected_element)
+    )
