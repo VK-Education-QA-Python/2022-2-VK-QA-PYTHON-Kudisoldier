@@ -1,36 +1,24 @@
 import pytest
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-import time
 import locators
+from conftest import login_with_credentials, element_position_fixed
 
 
-class element_position_fixed(object):
-  """An expectation for checking that an element has a fixed position.
-
-  locator - used to find the element
-  returns the WebElement once it is not moving
-  """
-  def __init__(self, locator):
-    self.locator = locator
-    self.pos = None
-    self.prev_pos = None
-
-  def __call__(self, driver):
-    element = driver.find_element(*self.locator)   # Finding the referenced element
-    self.pos = element.rect
-    if self.pos != self.prev_pos:   # Compare previous and current positions
-        self.prev_pos = self.pos
-        return False
-    else:
-        return element
-
-
+@pytest.mark.UI
+@pytest.mark.positive
 def test_login(session):
     assert session.current_url == 'https://target-sandbox.my.com/dashboard'
 
 
+@pytest.mark.UI
+@pytest.mark.positive
 def test_logout(session):
+    # wait until whole page loaded
+    WebDriverWait(session, 30).until(
+        EC.presence_of_element_located(locators.GETTING_STARTED_TITLE)
+    )
+
     account = WebDriverWait(session, 30).until(
         EC.element_to_be_clickable(locators.ACCOUNT_BUTTON)
     )
@@ -43,3 +31,17 @@ def test_logout(session):
     logout_button.click()
 
     assert session.current_url == 'https://target-sandbox.my.com/'
+
+
+@pytest.mark.UI
+@pytest.mark.negative
+def test_login_wrong_credentials(driver):
+    login_with_credentials(driver, 'abc@mail.ru', 'b')
+    driver.find_element(*locators.WRONG_CREDENTIALS_ERROR)
+
+
+@pytest.mark.UI
+@pytest.mark.negative
+def test_login_forbidden_credentials(driver):
+    login_with_credentials(driver, 'a', 'b')
+    driver.find_element(*locators.FORBIDDEN_CREDENTIALS_ERROR)
