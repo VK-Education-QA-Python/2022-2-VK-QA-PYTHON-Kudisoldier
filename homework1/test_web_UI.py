@@ -1,59 +1,26 @@
 import pytest
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
-import locators
 import string
 import random
-
-
-class element_position_fixed(object):
-  """An expectation for checking that an element has a fixed position.
-
-  locator - used to find the element
-  retries - used to define how many retries element should not move
-  returns the WebElement once it is not moving
-  """
-  def __init__(self, locator):
-    self.locator = locator
-    self.prev_pos = None
-
-  def __call__(self, driver):
-    element = driver.find_element(*self.locator)   # Finding the referenced element
-    pos = element.rect
-
-    if pos != self.prev_pos:   # Compare previous and current positions
-        self.prev_pos = pos
-        return False
-    else:  # pos == prev_pos and counter >= retries
-        return element
+from base import *
 
 
 @pytest.mark.UI
 @pytest.mark.positive
 def test_login(session):
-    assert session.current_url == 'https://target-sandbox.my.com/dashboard'
+    wait_until_page_loaded(session)
+    session.find_element(*locators.ACCOUNT_BUTTON)
 
 
 @pytest.mark.UI
 @pytest.mark.positive
 def test_logout(session):
-    # wait until whole page loaded
-    WebDriverWait(session, 30).until(
-        EC.presence_of_element_located(locators.GETTING_STARTED_TITLE)
-    )
+    wait_until_page_loaded(session)
 
-    account = WebDriverWait(session, 30).until(
-        EC.element_to_be_clickable(locators.ACCOUNT_BUTTON)
-    )
-    account.click()
+    click(session, locators.ACCOUNT_BUTTON)
+    click_when_animation_ends(session, locators.LOGOUT_BUTTON)
 
-    # set low poll_frequency to detect animation
-    logout_button = WebDriverWait(session, 30, poll_frequency=0.05).until(
-        element_position_fixed(locators.LOGOUT_BUTTON)  # use custom wait class
-    )
-    logout_button.click()
-
-    assert session.current_url == 'https://target-sandbox.my.com/'
+    wait_until_page_loaded(session)
+    session.find_element(*locators.LOGIN_FORM_BUTTON)
 
 
 @pytest.mark.UI
@@ -77,22 +44,18 @@ def test_login_forbidden_credentials(session):
 def test_change_contacts(session):
     session.get('https://target-sandbox.my.com/profile/contacts')
 
-    name_input = WebDriverWait(session, 30).until(
-        EC.presence_of_element_located(locators.NAME_INPUT)
-    )
-    name_input.clear()
-    name_input.send_keys(''.join(random.choices(string.ascii_lowercase, k=5)))
+    wait_until_page_loaded(session)
 
-    inn_input = session.find_element(*locators.INN_INPUT)
-    inn_input.clear()
-    inn_input.send_keys(''.join(random.choices(string.digits, k=12)))
+    random_name = ''.join(random.choices(string.ascii_lowercase, k=5))
+    fill_input(session, locators.NAME_INPUT, random_name)
 
-    phone_input = session.find_element(*locators.PHONE_INPUT)
-    phone_input.clear()
-    phone_input.send_keys('+7' + ''.join(random.choices(string.digits, k=10)))
+    random_inn = ''.join(random.choices(string.digits, k=12))
+    fill_input(session, locators.INN_INPUT, random_inn)
 
-    submit_button = session.find_element(*locators.SUBMIT_BUTTON)
-    submit_button.click()
+    random_phone = '+7' + ''.join(random.choices(string.digits, k=10))
+    fill_input(session, locators.PHONE_INPUT, random_phone)
+
+    click(session, locators.SUBMIT_BUTTON)
 
     WebDriverWait(session, 30).until(
         EC.visibility_of_element_located(locators.SUCCESS_NOTIFICATION)
@@ -106,11 +69,10 @@ def test_change_contacts(session):
                         (locators.BALANCE_BUTTON, locators.DEPOSIT_BUTTON)
 ])
 def test_page_navigation(input_button, expected_element, session):
-    button = WebDriverWait(session, 30).until(
-        EC.element_to_be_clickable(input_button)
-    )
-    button.click()
+    wait_until_page_loaded(session)
+    click(session, input_button)
 
+    wait_until_page_loaded(session)
     WebDriverWait(session, 30).until(
         EC.visibility_of_element_located(expected_element)
     )
