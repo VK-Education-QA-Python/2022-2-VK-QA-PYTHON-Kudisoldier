@@ -25,7 +25,7 @@ def driver(config):
 
     driver = webdriver.Chrome(service=Service(ChromeDriverManager(version="105.0.5195.19").install()),
                               options=options)
-    driver.set_window_size(1024, 768)
+    driver.set_window_size(1280, 720)
 
     yield driver
     driver.close()
@@ -36,6 +36,7 @@ def dashboard_page(driver):
     email, password = utils.get_credentials()
     requests_session = api_client.login(email, password)
     main_page = MainPage(driver)
+    main_page.open_main_page()
     utils.driver_load_requests_session(driver, requests_session)
     dashboard_page = main_page.go_to_dashboard()
 

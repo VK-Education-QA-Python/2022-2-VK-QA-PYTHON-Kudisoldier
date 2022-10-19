@@ -9,7 +9,7 @@ class BasePage:
         self.url = None
 
     def wait_until_page_loaded(self):
-        WebDriverWait(self.driver, 30).until(
+        WebDriverWait(self.driver, 120).until(
             EC.invisibility_of_element(BasePageLocators.SPINNER)
         )
 
@@ -21,3 +21,14 @@ class BasePage:
         input_filed = self.driver.find_element(*locator)
         input_filed.clear()
         input_filed.send_keys(string_to_fill)
+
+    def wait_until_visible(self, locator):
+        WebDriverWait(self.driver, 30).until(
+            EC.visibility_of_element_located(locator)
+        )
+
+    def wait_until_clickable(self, locator):
+        WebDriverWait(self.driver, 30).until(
+            EC.element_to_be_clickable(locator)
+        )
+
