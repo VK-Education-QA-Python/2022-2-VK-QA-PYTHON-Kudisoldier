@@ -7,6 +7,7 @@ class BasePage:
     def __init__(self, driver):
         self.driver = driver
         self.url = None
+        self.locators = None
 
     def wait_until_page_loaded(self):
         WebDriverWait(self.driver, 120).until(
@@ -32,3 +33,18 @@ class BasePage:
             EC.element_to_be_clickable(locator)
         )
 
+    def open_page(self, url):
+        self.driver.get(url)
+
+    def find(self, locator):
+        return self.driver.find_element(*locator)
+
+    def wait_until_page_changed(self, url):
+        WebDriverWait(self.driver, 240).until(
+            EC.url_changes(url)
+        )
+
+    def wait_until_invisible(self, locator):
+        WebDriverWait(self.driver, 240).until(
+            EC.invisibility_of_element_located(locator)
+        )

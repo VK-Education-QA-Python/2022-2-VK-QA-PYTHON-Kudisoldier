@@ -7,7 +7,7 @@ class MainPage(BasePage):
         self.url = 'https://target-sandbox.my.com/'
 
     def open_main_page(self):
-        self.driver.get(self.url)
+        self.open_page(self.url)
         self.wait_until_page_loaded()
 
     def go_to_dashboard(self):
