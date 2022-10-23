@@ -60,3 +60,17 @@ Features:
 - automatic allure reports
 - written with PageObject pattern
 - login with api call
+
+## Homework 3 - testing web site with API
+Steps to run homework3:
+```
+cd homework 3
+pytest -m API
+```
+
+Contents:
+- f
+
+Features:
+- support multiple CPU runs
+- written with PageObject pattern
