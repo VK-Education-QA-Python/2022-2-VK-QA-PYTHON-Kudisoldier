@@ -67,8 +67,61 @@ class ApiClient(BaseApi):
         return [i['id'] for i in response.json['items'] if i['name'] == campaign_name]
 
     def delete_campaign(self, campaign_id):
-        data = [{"id":campaign_id,"status":"deleted"}]
-        response = self._request('post', f'https://target-sandbox.my.com/api/v2/campaigns/mass_action.json',
-                                 json=data, headers={'x-csrftoken': self.get_csrf_token()})
+        data = [{"id": campaign_id, "status": "deleted"}]
+        self._request('post', f'https://target-sandbox.my.com/api/v2/campaigns/mass_action.json',
+                      json=data, headers={'x-csrftoken': self.get_csrf_token()})
 
+    def create_segment(self):
+        fields = 'relations__object_type,relations__object_id,relations__params,relations__params__score,' \
+                 'relations__id,relations_count,id,name,pass_condition,created,campaign_ids,users,flags'
+        segment_name = str(uuid.uuid4())
+        data = {"name": segment_name, "pass_condition": 1, "relations": [
+            {"object_type": "remarketing_player", "params": {"type": "positive", "left": 365, "right": 0}}],
+                "logicType": "or"}
+        response = self._request('post', f'https://target-sandbox.my.com/api/v2/remarketing/segments.json'
+                                         f'?fields={fields}', json=data, headers={'x-csrftoken': self.get_csrf_token()})
+        return response.json, segment_name
 
+    def get_segment(self, segment_name):
+        fields = 'relations__object_type,relations__object_id,relations__params,relations__params__score,' \
+                 'relations__id,relations_count,id,name,pass_condition,created,campaign_ids,users,' \
+                 'flags&limit=500'
+        response = self._request('get', f'https://target-sandbox.my.com/api/v2/remarketing/segments.json'
+                                        f'?fields={fields}')
+        return [i['id'] for i in response.json['items'] if i['name'] == segment_name]
+
+    def delete_segment(self, segment_id):
+        data = [{"source_id": segment_id, "source_type": "segment"}]
+        self._request('post', 'https://target-sandbox.my.com/api/v1/remarketing/mass_action/delete.json',
+                      json=data, headers={'x-csrftoken': self.get_csrf_token()})
+
+    def create_audience_vk(self):
+        vkgroup = 'https://vk.ru/vkedu'
+        response = self._request('get', f'https://target-sandbox.my.com/api/v2/vk_groups.json?_q={vkgroup}')
+        group_id = response.json['items'][0]['id']
+
+        data = {"items": [{"object_id": group_id}]}
+        self._request('post', 'https://target-sandbox.my.com/api/v2/remarketing/vk_groups/bulk.json'
+                              '?fields=id,object_id,name,users_count,url', json=data,
+                      headers={'x-csrftoken': self.get_csrf_token()})
+
+    def get_audience_vk(self):
+        vkgroup_name = 'VK Образование'
+        response = self._request('get', 'https://target-sandbox.my.com/api/v2/remarketing/vk_groups.json'
+                                        '?fields=id,object_id,name,users_count,url&limit=50')
+        return [[i['id'], i['object_id']] for i in response.json['items'] if i['name'] == vkgroup_name]
+
+    def delete_audience_vk(self, vkgroup_id):
+        self._request('delete', f'https://target-sandbox.my.com/api/v2/remarketing/vk_groups/{vkgroup_id}.json',
+                      headers={'x-csrftoken': self.get_csrf_token()})
+
+    def create_segment_vkgorup(self, object_id):
+        segment_name = str(uuid.uuid4())
+        data = {"name": segment_name, "pass_condition": 1, "relations": [
+               {"object_type": "remarketing_vk_group", "params": {"source_id": object_id, "type": "positive"}}],
+                "logicType": "or"}
+        fields = 'relations__object_type,relations__object_id,relations__params,relations__params__score,' \
+                 'relations__id,relations_count,id,name,pass_condition,created,campaign_ids,users,flags'
+        response = self._request('post', f'https://target-sandbox.my.com/api/v2/remarketing/segments.json'
+                                         f'?fields={fields}', json=data, headers={'x-csrftoken': self.get_csrf_token()})
+        return response.json, segment_name
