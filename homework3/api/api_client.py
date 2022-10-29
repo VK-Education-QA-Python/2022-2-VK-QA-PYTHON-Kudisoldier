@@ -4,14 +4,15 @@ import uuid
 
 class ApiClient(BaseApi):
     def login(self, email, password):
+        data = {
+            'email': email,
+            'password': password,
+            'continue': 'https://target-sandbox.my.com/auth/mycom?'
+                        'state=target_login=1&ignore_opener=1#email',
+            'failure': 'https://account.my.com/login/'
+        }
         response = self._request('post', 'https://auth-ac.my.com/auth?lang=en&nosavelogin=0',
-                                 data={
-                                     'email': email,
-                                     'password': password,
-                                     'continue': 'https://target-sandbox.my.com/auth/mycom?'
-                                                 'state=target_login=1&ignore_opener=1#email',
-                                     'failure': 'https://account.my.com/login/'
-                                 }, headers={'referer': 'https://target-sandbox.my.com'})
+                                 data=data, headers={'referer': 'https://target-sandbox.my.com'})
 
         self._request('get', response.url)
 
@@ -118,7 +119,7 @@ class ApiClient(BaseApi):
     def create_segment_vkgorup(self, object_id):
         segment_name = str(uuid.uuid4())
         data = {"name": segment_name, "pass_condition": 1, "relations": [
-               {"object_type": "remarketing_vk_group", "params": {"source_id": object_id, "type": "positive"}}],
+            {"object_type": "remarketing_vk_group", "params": {"source_id": object_id, "type": "positive"}}],
                 "logicType": "or"}
         fields = 'relations__object_type,relations__object_id,relations__params,relations__params__score,' \
                  'relations__id,relations_count,id,name,pass_condition,created,campaign_ids,users,flags'

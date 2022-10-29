@@ -1,11 +1,11 @@
 import pytest
-from api.api import ApiClient
+from api.api_client import ApiClient
+import utils
 
 
 @pytest.fixture()
 def client():
-    email = '2jorzjylbglw@mail.ru'
-    password = '2jorzjylbglw'
+    email, password = utils.get_credentials()
 
     client = ApiClient()
     client.login(email, password)

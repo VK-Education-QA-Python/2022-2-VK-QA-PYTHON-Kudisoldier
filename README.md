@@ -61,7 +61,7 @@ Features:
 - written with PageObject pattern
 - login with api call
 
-## Homework 3 - testing web site with API
+## Homework 3 - testing website with API
 Steps to run homework3:
 ```
 cd homework 3
@@ -69,7 +69,9 @@ pytest -m API
 ```
 
 Contents:
-- f
+- advertising campaign test
+- creation of segment with audience in app test
+- creation of segment with vk edu group test
 
 Features:
 - support multiple CPU runs

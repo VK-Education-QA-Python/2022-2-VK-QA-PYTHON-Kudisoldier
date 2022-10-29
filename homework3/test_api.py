@@ -1,6 +1,6 @@
 import pytest
 
-@pytest.mark.skip
+
 @pytest.mark.API
 def test_campaign(client):
     result, campaign_name = client.create_campaign()
@@ -10,7 +10,7 @@ def test_campaign(client):
     client.delete_campaign(campaign_id)
     assert not client.get_campaign(campaign_name)  # check is list empty and we deleted campaign
 
-@pytest.mark.skip
+
 @pytest.mark.API
 def test_segment_games(client):
     result, segment_name = client.create_segment()

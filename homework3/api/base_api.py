@@ -27,7 +27,7 @@ class BaseApi:
         return ApiResponse(json=response_json, status_code=requests_response.status_code,
                            url=requests_response.url, text=requests_response.text)
 
-    def get_cookies(self, method: str, url: str):
+    def get_cookies(self, method: str, url: str) -> dict:
         requests_response = self.session.request(method, url)
         return requests_response.cookies.get_dict()
 
