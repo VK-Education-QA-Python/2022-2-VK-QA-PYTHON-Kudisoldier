@@ -1,5 +1,6 @@
 from pages.base_page import BasePage
 from locators.main_locators import MainLocators
+from pages.settings_page import SettingsPage
 
 
 class MainPage(BasePage):
@@ -7,8 +8,11 @@ class MainPage(BasePage):
         super().__init__(driver)
         self.locators = MainLocators
 
-    def search_text(self, text):
+    def wait_controls(self):
         self.wait_until_visible(self.locators.VOICE_ASSISTANT_BUTTON)
+
+    def search_text(self, text):
+        self.wait_controls()
         self.click(self.locators.KEYBOARD_BUTTON)
         self.fill_input(self.locators.SEARCH_INPUT, text)
         self.click(self.locators.SEARCH_BUTTON)
@@ -22,4 +26,16 @@ class MainPage(BasePage):
 
     def get_fact_result(self):
         return self.find_element(self.locators.FACT_CARD_TITLE).get_attribute('text')
+
+    def get_chat_result(self):
+        return self.find_elements(self.locators.CHAT_MESSAGE)[-1].get_attribute('text')
+
+    def open_settings(self):
+        self.wait_controls()
+        self.click(self.locators.SETTINGS_BUTTON)
+        return SettingsPage(self.driver)
+
+    def get_audio_name(self):
+        self.click(self.locators.PLAY_BUTTON)
+        return self.find_element(self.locators.AUDIO_TRACK).get_attribute('text')
 
