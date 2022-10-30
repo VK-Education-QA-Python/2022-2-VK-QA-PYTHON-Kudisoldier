@@ -33,3 +33,9 @@ def main_page(driver):
     onboarding_page = permission_page.allow_all()
     main_page = onboarding_page.close_onboarding()
     return main_page
+
+
+@pytest.fixture()
+def version(repo_root):
+    version_parsed = os.listdir(repo_root+'/apk')[0].replace('.apk', '').replace('marussia_', 'Версия ')
+    return version_parsed
