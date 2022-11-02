@@ -1,9 +1,6 @@
-EMAIL = '2jorzjylbglw@mail.ru'
-PASSWORD = '2jorzjylbglw'
-
-
 def get_credentials():
-    return EMAIL, PASSWORD
+    with open("credentials.txt", "r") as file:
+        return file.read().split(':')
 
 
 def driver_load_requests_session(driver, requests_session):
