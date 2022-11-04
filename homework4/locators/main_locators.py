@@ -12,3 +12,4 @@ class MainLocators:
     SETTINGS_BUTTON = (AppiumBy.ID, "ru.mail.search.electroscope:id/assistant_menu_bottom")
     AUDIO_TRACK = (AppiumBy.ID, "ru.mail.search.electroscope:id/player_track_name")
     PLAY_BUTTON = (AppiumBy.ID, "ru.mail.search.electroscope:id/play_button")
+    REV_BUTTON = (AppiumBy.ID, "ru.mail.search.electroscope:id/player_track_rev_button")

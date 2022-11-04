@@ -3,8 +3,7 @@
 ## Homework 1 - testing web UI with selenium
 Steps to run homework1:
 ```
-cd homework 1
-pytest -v -m UI --headless
+pytest homework1 -m UI --headless
 ```
 
 Contents:
@@ -19,8 +18,7 @@ Steps to run homework4:
 ```
 run phone emulator with Adnroid Studio
 run appium server with settings
-cd homework 4
-pytest -v -m AndroidUI
+pytest homework4 -m AndroidUI
 ```
 
 Contents:
