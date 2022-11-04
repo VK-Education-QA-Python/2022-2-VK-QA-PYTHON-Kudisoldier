@@ -21,9 +21,3 @@ class NewsSourcePage(BasePage):
         self.click(self.locators.CLOSE_BUTTON)
 
         return SettingsPage(self.driver)
-
-
-
-
-
-

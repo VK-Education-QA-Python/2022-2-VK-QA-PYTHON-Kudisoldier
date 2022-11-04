@@ -19,10 +19,12 @@ class MainPage(BasePage):
 
     def swipe_suggested(self, card_text):
         suggested_elements = self.find_elements(self.locators.SUGGESTED_ITEMS)
-        while suggested_elements[-1].get_attribute('text') != card_text:
+
+        while card_text not in [i.get_attribute('text') for i in suggested_elements]:
             self.scroll_from_to(suggested_elements[1], suggested_elements[0])
             suggested_elements = self.find_elements(self.locators.SUGGESTED_ITEMS)
-        self.click(suggested_elements[-1])
+        found_element_index = [i.get_attribute('text') for i in suggested_elements].index(card_text)
+        self.click(suggested_elements[found_element_index])
 
     def get_fact_result(self):
         return self.find_element(self.locators.FACT_CARD_TITLE).get_attribute('text')
@@ -36,6 +38,6 @@ class MainPage(BasePage):
         return SettingsPage(self.driver)
 
     def get_audio_name(self):
+        self.click(self.locators.REV_BUTTON)
         self.click(self.locators.PLAY_BUTTON)
         return self.find_element(self.locators.AUDIO_TRACK).get_attribute('text')
-

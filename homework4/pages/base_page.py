@@ -1,7 +1,7 @@
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
-import time
+
 
 class BasePage:
     def __init__(self, driver):
@@ -45,6 +45,3 @@ class BasePage:
         WebDriverWait(self.driver, 30).until(
             EC.visibility_of_element_located(locator)
         )
-
-
-

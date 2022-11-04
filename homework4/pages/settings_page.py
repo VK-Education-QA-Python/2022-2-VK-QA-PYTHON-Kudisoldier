@@ -16,11 +16,11 @@ class SettingsPage(BasePage):
             settings_elements = self.find_elements(self.locators.SETTINGS_BUTTONS)
             settings_elements = [i for i in settings_elements if i.get_attribute('clickable') == 'true']
         menu_index = [i.get_attribute('resource-id') for i in settings_elements].index(menu_id)
-        settings_elements[menu_index].click()
+        self.click(settings_elements[menu_index])
 
     def open_news_source(self):
         from pages.news_source_page import NewsSourcePage
-        menu_id = 'ru.mail.search.electroscope:id/user_settings_field_news_sources'
+        menu_id = self.locators.NEWS_SOURCES[1]
         self.scroll_to_item_menu_and_click(menu_id)
         return NewsSourcePage(self.driver)
 
@@ -33,10 +33,7 @@ class SettingsPage(BasePage):
     def open_about(self):
         from pages.about_page import AboutPage
 
-        menu_id = 'ru.mail.search.electroscope:id/user_settings_about'
+        menu_id = self.locators.ABOUT_BUTTON[1]
         self.scroll_to_item_menu_and_click(menu_id)
 
         return AboutPage(self.driver)
-
-
-
