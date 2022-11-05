@@ -16,24 +16,54 @@ Contents:
 
 
 ## Homework 5 - writing scripts
-Steps to run homework5:
+Steps to run homework5:  
+All scripts should be run from repository root folder  
+Set up your path variable as follows:
 ```
-./script_name.bash
+export PATH_TO_LOG_FILE=setup_your_path.log
+```
+Then run one of these scripts like that
+
+```
+./path/script.bash <path_to_log_file>
 OR
-python3 ./script_name.py
+python3 ./path/script.py <path_to_log_file> --json
+--json is optional
+```
+
+Copy-paste commands:
+```
+./task1/count_requests.bash $PATH_TO_LOG_FILE
+python3 ./task1/count_requests.py $PATH_TO_LOG_FILE
+OR with optional flag --json
+python3 ./task1/count_requests.py $PATH_TO_LOG_FILE --json
+
+./task2/count_requests_type.bash $PATH_TO_LOG_FILE
+python3 ./task2/count_requests_type.py $PATH_TO_LOG_FILE
+OR with optional flag --json
+python3 ./task2/count_requests_type.py $PATH_TO_LOG_FILE --json
+
+./task3/top_frequent_requests.bash $PATH_TO_LOG_FILE
+python3 ./task3/top_frequent_requests.py $PATH_TO_LOG_FILE
+OR with optional flag --json
+python3 ./task3/top_frequent_requests.py $PATH_TO_LOG_FILE --json
+
+./task4/top_biggest_requests.bash $PATH_TO_LOG_FILE
+python3 ./task4/top_biggest_requests.py $PATH_TO_LOG_FILE
+OR with optional flag --json
+python3 ./task4/top_biggest_requests.py $PATH_TO_LOG_FILE --json
+
+./task5/top_user_requests_failed.bash $PATH_TO_LOG_FILE
+python3 ./task5/top_user_requests_failed.py $PATH_TO_LOG_FILE
+OR with optional flag --json
+python3 ./task5/top_user_requests_failed.py $PATH_TO_LOG_FILE --json
 ```
 
 
 Contents:
-- f
-
-Time comparison:
-* 1'st task:  
-./requests_count.**bash**  0.03s user 0.02s system 91% cpu **0.060** total  
-python3 ./requests_count.**py**  0.05s user 0.03s system 83% cpu **0.097** total
-* 2'nd task:  
-./count_requests_type.**bash**  1.04s user 0.02s system 103% cpu **1.017** total  
-python3 ./count_requests_type.**py**  0.21s user 0.02s system 98% cpu **0.235** total
-* 3'rd task:  
-asd
+- log requests count (task1)
+- requests type count (task2)
+- top 10 frequent requests (task3)
+- top 5 biggest requests with 4XX error (task4)
+- top 5 users with requests ended 5XX error (task5)
 

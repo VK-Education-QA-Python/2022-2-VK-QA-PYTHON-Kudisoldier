@@ -1,1 +1,0 @@
-awk '{print substr($6, 2)}' access.log | sort | uniq -c | sort -nk1

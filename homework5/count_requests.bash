@@ -1,1 +1,0 @@
-wc -l access.log | awk '{print $1}'
