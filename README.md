@@ -3,8 +3,7 @@
 ## Homework 1 - testing web UI with selenium
 Steps to run homework1:
 ```
-cd homework 1
-pytest -v -m UI --headless
+pytest homework1 -m UI --headless
 ```
 
 Contents:
@@ -17,8 +16,7 @@ Contents:
 ## Homework 2 - testing web UI with selenium and PageObject pattern
 Steps to run homework2:
 ```
-cd homework 2
-pytest -v -m UI --headless -n 3 --alluredir allure
+pytest homework2 -m UI --headless -n 3 --alluredir allure
 ```
 Steps to view allure report:
 ```
@@ -60,3 +58,18 @@ Features:
 - automatic allure reports
 - written with PageObject pattern
 - login with api call
+
+## Homework 4 - testing android UI with appium
+Steps to run homework4:
+```
+run phone emulator with Adnroid Studio
+run appium server with settings
+pytest homework4 -m AndroidUI
+```
+
+Contents:
+- command window test
+- calculator test
+- news source test
+- settings test
+
