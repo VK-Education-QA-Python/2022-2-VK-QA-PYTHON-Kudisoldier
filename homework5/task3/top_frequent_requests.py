@@ -1,18 +1,17 @@
 import sys
 import json
+import re
 
 d = {}
 with open(sys.argv[1]) as file:
     for i in file.readlines():
         path = i.split(' ')[6]
-        path = path.replace('http://almhuette-raith.at', '')
-        if path.find('?'):
-            path = path.split('?')[0]
+        location = re.search(r'(?<!:)(?<!\/)\/[^?]*', path)[0]
 
-        if d.get(path) is not None:
-            d[path] += 1
+        if d.get(location) is not None:
+            d[location] += 1
         else:
-            d[path] = 1
+            d[location] = 1
 
 d = dict(sorted(d.items(), key=lambda a: int(a[1]))[-10:])
 

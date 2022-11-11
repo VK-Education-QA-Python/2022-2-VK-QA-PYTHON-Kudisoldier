@@ -1,20 +1,3 @@
-# VK SDET homeworks
-
-## Homework 1 - testing web UI with selenium
-Steps to run homework1:
-```
-cd homework 1
-pytest -v -m UI --headless
-```
-
-Contents:
-- login test
-- logout test
-- 2 login negative test
-- change contacts test
-- 2 parametrized menu page navigation
-
-
 ## Homework 5 - writing scripts
 Steps to run homework5:  
 All scripts should be run from repository root folder  
@@ -62,8 +45,17 @@ python3 ./task5/top_user_requests_failed.py $PATH_TO_LOG_FILE --json
 
 Contents:
 - log requests count (task1)
+  - \<number>
 - requests type count (task2)
+  - \<method> \<count>
 - top 10 frequent requests (task3)
+  - \<location>
+  - \<number count>
 - top 5 biggest requests with 4XX error (task4)
+  - \<url>
+  - \<status code>
+  - \<size in bytes>
+  - \<ip address>
 - top 5 users with requests ended 5XX error (task5)
-
+  - \<ip address>
+  - \<requests count>
