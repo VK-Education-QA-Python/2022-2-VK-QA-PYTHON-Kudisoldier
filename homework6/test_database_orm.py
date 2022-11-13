@@ -30,8 +30,8 @@ class TestRequestsCount(SqlTestBase):
 
     def test_requests_count(self):
         requests_count = self.get_requests_count()
-        bash_res = subprocess.check_output(os.getcwd() + '/scripts/count_requests.bash '
-                                           + os.getcwd() + '/nginx_log.txt', shell=True).decode('utf-8')
+        bash_res = subprocess.check_output(os.getcwd() + '/homework6/scripts/count_requests.bash '
+                                           + os.getcwd() + '/homework6/nginx_log.txt', shell=True).decode('utf-8')
         assert str(requests_count[0]) == bash_res[:-1]
 
 
@@ -47,8 +47,8 @@ class TestRequestsTypeCount(SqlTestBase):
     def test_requests_count(self):
         requests_type_count = self.get_requests_type_count()
 
-        bash_res = subprocess.check_output(os.getcwd() + '/scripts/count_requests_type.bash '
-                                           + os.getcwd() + '/nginx_log.txt', shell=True).decode('utf-8')
+        bash_res = subprocess.check_output(os.getcwd() + '/homework6/scripts/count_requests_type.bash '
+                                           + os.getcwd() + '/homework6/nginx_log.txt', shell=True).decode('utf-8')
 
         assert [repr(requests_type_count[i]) for i in range(len(requests_type_count))] == bash_res.splitlines()
 
@@ -65,8 +65,8 @@ class TestTopFrequent(SqlTestBase):
     def test_top_frequent_requests(self):
         requests_count = self.get_requests_top_count()
 
-        bash_res = subprocess.check_output(os.getcwd() + '/scripts/top_frequent_requests.bash '
-                                           + os.getcwd() + '/nginx_log.txt', shell=True).decode('utf-8')
+        bash_res = subprocess.check_output(os.getcwd() + '/homework6/scripts/top_frequent_requests.bash '
+                                           + os.getcwd() + '/homework6/nginx_log.txt', shell=True).decode('utf-8')
         db_res = [repr(requests_count[i]).split() for i in range(len(requests_count))]
         flatten_list = [j for sub in db_res for j in sub]
         assert len(flatten_list) == len(bash_res.splitlines())
@@ -84,8 +84,8 @@ class TestTopBiggest(SqlTestBase):
         requests_top_biggest = self.get_biggest_requests()
         db_res = [repr(requests_top_biggest[i]).split() for i in range(len(requests_top_biggest))]
         flatten_list = [j for sub in db_res for j in sub]
-        bash_res = subprocess.check_output(os.getcwd() + '/scripts/top_biggest_requests.bash '
-                                           + os.getcwd() + '/nginx_log.txt', shell=True).decode('utf-8')
+        bash_res = subprocess.check_output(os.getcwd() + '/homework6/scripts/top_biggest_requests.bash '
+                                           + os.getcwd() + '/homework6/nginx_log.txt', shell=True).decode('utf-8')
 
         assert len(flatten_list) == len(bash_res.splitlines())
 
@@ -102,8 +102,8 @@ class TestTopFailed(SqlTestBase):
         requests_top_failed = self.get_top_failed_requests()
         db_res = [repr(requests_top_failed[i]).split() for i in range(len(requests_top_failed))]
         flatten_list = [j for sub in db_res for j in sub]
-        bash_res = subprocess.check_output(os.getcwd() + '/scripts/top_user_requests_failed.bash '
-                                           + os.getcwd() + '/nginx_log.txt', shell=True).decode('utf-8')
+        bash_res = subprocess.check_output(os.getcwd() + '/homework6/scripts/top_user_requests_failed.bash '
+                                           + os.getcwd() + '/homework6/nginx_log.txt', shell=True).decode('utf-8')
 
         assert flatten_list == bash_res.splitlines()
 

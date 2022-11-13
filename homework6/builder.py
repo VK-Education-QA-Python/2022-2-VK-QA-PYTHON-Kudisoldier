@@ -12,13 +12,13 @@ class DataBuilder:
         self.client = client
 
     def requests_count(self):
-        with open(os.getcwd() + '/nginx_log.txt') as file:
+        with open(os.getcwd() + '/homework6/nginx_log.txt') as file:
             requests_count = len(file.readlines())
         self.client.session.add(CountRequestsModel(requests_count))
 
     def requests_type(self):
         d = {}
-        with open(os.getcwd() + '/nginx_log.txt') as file:
+        with open(os.getcwd() + '/homework6/nginx_log.txt') as file:
             for i in file.readlines():
                 method = i.split(' ')[5][1:]
 
@@ -32,7 +32,7 @@ class DataBuilder:
 
     def requests_top_count(self):
         d = {}
-        with open(os.getcwd() + '/nginx_log.txt') as file:
+        with open(os.getcwd() + '/homework6/nginx_log.txt') as file:
             for i in file.readlines():
                 path = i.split(' ')[6]
                 location = re.search(r'(?<!:)(?<!\/)\/[^?]*', path)[0]
@@ -49,7 +49,7 @@ class DataBuilder:
 
     def requests_top_biggest(self):
         requests = []
-        with open(os.getcwd() + '/nginx_log.txt') as file:
+        with open(os.getcwd() + '/homework6/nginx_log.txt') as file:
             for i in file.readlines():
                 request = i.split(' ')
                 if re.match(r'4\d\d', request[8]):
@@ -62,7 +62,7 @@ class DataBuilder:
 
     def requests_top_failed(self):
         d = {}
-        with open(os.getcwd() + '/nginx_log.txt') as file:
+        with open(os.getcwd() + '/homework6/nginx_log.txt') as file:
             for i in file.readlines():
                 request = i.split(' ')
                 if re.match(r'5\d\d', request[8]):
