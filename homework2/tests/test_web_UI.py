@@ -17,7 +17,7 @@ def test_campaign_create(dashboard_page):
         new_campaign_page.scroll_campaign_creation()
         new_campaign_page.fill_campaign_text()
         dashboard_page = new_campaign_page.create_campaign()
-        dashboard_page.wait_success_notification()
+        assert dashboard_page.wait_success_notification()
 
         dashboard_page.notification_close()
 
@@ -26,7 +26,9 @@ def test_campaign_create(dashboard_page):
         dashboard_page.click_checkbox_campaign(campaign_name)
         dashboard_page.click_actions()
         dashboard_page.click_delete_action()
-        dashboard_page.wait_success_notification()
+        assert dashboard_page.wait_success_notification()
+        dashboard_page.reload_page()
+        assert not dashboard_page.find_campaign(campaign_name)
 
 
 @pytest.mark.UI
@@ -43,13 +45,15 @@ def test_segment_create(dashboard_page):
         segments_page.click_add_segments_button()
         segment_name = segments_page.fill_segment_name()
         segments_page.click_create_segment_button()
-        segments_page.find_segment(segment_name)
+        assert segments_page.find_segment(segment_name)
 
     with allure.step("Delete previosly created segment with audience in app"):
         segments_page.click_segment_checkbox(segment_name)
         segments_page.click_actions()
         segments_page.click_delete()
-        segments_page.wait_success_notification()
+        assert segments_page.wait_success_notification()
+        segments_page.reload_page()
+        assert not segments_page.find_segment(segment_name)
 
 
 @pytest.mark.UI
@@ -72,13 +76,15 @@ def test_segment_vk_group_create(dashboard_page):
         segments_page.click_add_segments_button()
         segment_name = segments_page.fill_segment_name()
         segments_page.click_create_segment_button()
-        segments_page.find_segment(segment_name)
+        assert segments_page.find_segment(segment_name)
 
     with allure.step("Delete segment with vk edu group test"):
         segments_page.click_segment_checkbox(segment_name)
         segments_page.click_actions()
         segments_page.click_delete()
-        segments_page.wait_success_notification()
+        assert segments_page.wait_success_notification()
+        segments_page.reload_page()
+        assert not segments_page.find_segment(segment_name)
 
         segments_page.click_ok_vk_datasource()
         segments_page.click_vk_edu_remove()

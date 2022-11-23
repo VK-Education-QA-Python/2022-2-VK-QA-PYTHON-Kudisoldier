@@ -1,3 +1,4 @@
+import selenium.common.exceptions
 from pages.base_page import BasePage
 from locators.segments_locators import SegmentsLocators
 import uuid
@@ -32,7 +33,12 @@ class SegmentsPage(BasePage):
         self.click(self.locators.CREATE_SEGMENT_BUTTON)
 
     def find_segment(self, segment_uuid):
-        self.wait_until_visible(self.locators.get_segment_locator(segment_uuid))
+        try:
+            self.wait_until_visible(self.locators.get_segment_locator(segment_uuid))
+            return True
+        except selenium.common.exceptions.TimeoutException:
+            return False
+
 
     def click_segment_checkbox(self, segment_uuid):
         href = self.find(self.locators.get_segment_href(segment_uuid)).get_attribute("href")
@@ -46,7 +52,11 @@ class SegmentsPage(BasePage):
         self.click(self.locators.DELETE_BUTTON)
 
     def wait_success_notification(self):
-        self.wait_until_visible(self.locators.SUCCESS_NOTIFICATION)
+        try:
+            self.wait_until_visible(self.locators.SUCCESS_NOTIFICATION)
+            return True
+        except selenium.common.exceptions.TimeoutException:
+            return False
 
     def click_ok_vk_datasource(self):
         self.click(self.locators.OK_AND_VK_GROUP_DATASOURCE)

@@ -1,5 +1,6 @@
 from pages.base_page import BasePage
 from locators.dashboard_locators import DashboardLocators
+import selenium.common.exceptions
 
 
 class DashboardPage(BasePage):
@@ -40,7 +41,11 @@ class DashboardPage(BasePage):
         return SegmentsPage(self.driver)
 
     def wait_success_notification(self):
-        self.wait_until_visible(self.locators.SUCCESS_NOTIFICATION)
+        try:
+            self.wait_until_visible(self.locators.SUCCESS_NOTIFICATION)
+            return True
+        except selenium.common.exceptions.TimeoutException:
+            return False
 
     def notification_close(self):
         self.click(self.locators.SUCCESS_NOTIFICATION_CLOSE)
