@@ -55,7 +55,6 @@ def get_user_id_by_name(response: Response, name: str):
                 user.surname = response_surname.json()
         except Exception as e:
             print(f'Unable to get surname from external system:\n{e}')
-        print(f'No surname found for user {name}')
 
         return user
 

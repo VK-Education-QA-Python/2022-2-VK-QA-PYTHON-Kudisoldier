@@ -43,7 +43,20 @@ def pytest_configure(config):
         config.instance_app.start()
         wait_ready(settings.APP_HOST, settings.APP_PORT)
 
+        stub_server_config = Config("stub.fastapi_stub:app", host=settings.STUB_HOST,
+                               port=settings.STUB_PORT, log_level="debug")
+        config.instance_stub = UvicornServer(config=stub_server_config)
+        config.instance_stub.start()
+        wait_ready(settings.STUB_HOST, settings.STUB_PORT)
+
+        mock_server_config = Config("mock.fastapi_mock:app", host=settings.MOCK_HOST,
+                               port=settings.MOCK_PORT, log_level="debug")
+        config.instance_mock = UvicornServer(config=mock_server_config)
+        config.instance_mock.start()
+        wait_ready(settings.MOCK_HOST, settings.MOCK_PORT)
+
 
 def pytest_unconfigure(config):
     config.instance_app.stop()
-
+    config.instance_stub.stop()
+    config.instance_mock.stop()
