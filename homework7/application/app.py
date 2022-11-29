@@ -1,81 +1,71 @@
-#!/Users/efim/PycharmProjects/2022-2-VK-QA-PYTHON-Kudisoldier/venv/bin/python3
-import json
-import os
+from fastapi import Request, Response, FastAPI
+from pydantic import BaseModel
 import requests
-from flask import Flask, request, jsonify
-import threading
 import settings
+from typing import Optional
 
-app = Flask(__name__)
+app = FastAPI()
+
 
 app_data = {}
 user_id_seq = 1
 
 
-@app.route('/add_user', methods=['POST'])
-def create_user():
+class User(BaseModel):
+    id: int
+    name: str
+    surname: Optional[str]
+    age: Optional[int]
+
+
+@app.post("/add_user", status_code=201)
+async def create_user(response: Response, request: Request):
     global user_id_seq
 
-    user_name = json.loads(request.data)['name']
+    post_body = await request.json()
+    user_name = post_body.get('name')
     if user_name not in app_data:
         app_data[user_name] = user_id_seq
         user_id_seq += 1
-        return jsonify({'user_id': app_data[user_name]}), 201
-
+        return {'user_id': app_data[user_name]}
     else:
-        return jsonify(f'User_name {user_name} already exists: id: {app_data[user_name]}'), 400
+        response.status_code = 400
+        return f'User_name {user_name} already exists: id: {app_data[user_name]}'
 
 
-@app.route('/get_user/<name>', methods=['GET'])
-def get_user_id_by_name(name):
+@app.get('/get_user/{name}', status_code=200)
+def get_user_id_by_name(response: Response, name: str):
     if user_id := app_data.get(name):
-        age_host = os.environ['STUB_HOST']
-        age_port = os.environ['STUB_PORT']
+        user = User(id=user_id, name=name)
 
-        age = None
+        age_host = settings.STUB_HOST
+        age_port = settings.STUB_PORT
+
         try:
-            age = requests.get(f'http://{age_host}:{age_port}/get_age/{name}').json()
+            user.age = requests.get(f'http://{age_host}:{age_port}/get_age/{name}').json()
         except Exception as e:
             print(f'Unable to get age from external system:\n{e}')
 
-        surname_host = os.environ['MOCK_HOST']
-        surname_port = os.environ['MOCK_PORT']
+        surname_host = settings.MOCK_HOST
+        surname_port = settings.MOCK_PORT
 
-        surname = None
         try:
-            response = requests.get(f'http://{surname_host}:{surname_port}/get_surname/{name}')
-            if response.status_code == 200:
-                surname = response.json()
+            response_surname = requests.get(f'http://{surname_host}:{surname_port}/get_surname/{name}')
+            if response_surname.status_code == 200:
+                user.surname = response_surname.json()
         except Exception as e:
             print(f'Unable to get surname from external system:\n{e}')
         print(f'No surname found for user {name}')
-        data = {'user_id': user_id,
-                'age': age,
-                'surname': surname}
 
-        return jsonify(data), 200
+        return user
 
     else:
-        return jsonify(f'User_name {name} not found'), 404
+        response.status_code = 404
+        return f'User_name {name} not found'
 
 
-@app.route('/me', methods=['GET'])
-def appf():
-    return 'app'
 
+# @app.put("/items/{item_id}")
+# def update_item(item_id: int, user: User):
+#     return {"item_name": user.name, "item_id": item_id}
 
-def run_app():
-    server = threading.Thread(target=app.run, kwargs={
-        'host': settings.APP_HOST,
-        'port': settings.APP_PORT
-    })
-
-    server.start()
-    return server
-
-
-if __name__ == '__main__':
-    host = settings.APP_HOST
-    port = settings.APP_PORT
-
-    app.run(host=host, port=port)
