@@ -4,7 +4,8 @@ import settings
 url = f'http://{settings.APP_HOST}:{settings.APP_PORT}'
 
 
-def test():
+def test_availability():
+    import pdb; pdb.set_trace()
     requests.get(url)
 
 
@@ -53,4 +54,4 @@ def test_has_no_surname():
 
     resp = requests.get(f'{url}/get_user/Sveta')
     surname = resp.json()['surname']
-    assert surname == None
+    assert surname is None

@@ -16,4 +16,4 @@ def get_user_surname(response: Response, name: str):
         return surname
     else:
         response.status_code = 404
-        return f'Surname for user "{name}" not found'
+        return f'Surname for user {name} not found'

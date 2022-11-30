@@ -4,6 +4,8 @@ from uvicorn import Config, Server
 import time
 import requests
 import settings
+import logging
+import logging.handlers
 
 
 class UvicornServer(multiprocessing.Process):
@@ -38,19 +40,29 @@ def wait_ready(host, port):
 def pytest_configure(config):
     if not hasattr(config, 'workerinput'):
         server_config = Config("application.app:app", host=settings.APP_HOST,
-                               port=settings.APP_PORT, log_level="debug")
+                               port=settings.APP_PORT)
         config.instance_app = UvicornServer(config=server_config)
         config.instance_app.start()
+
         wait_ready(settings.APP_HOST, settings.APP_PORT)
 
         stub_server_config = Config("stub.fastapi_stub:app", host=settings.STUB_HOST,
-                               port=settings.STUB_PORT, log_level="debug")
+                                    port=settings.STUB_PORT)
         config.instance_stub = UvicornServer(config=stub_server_config)
         config.instance_stub.start()
         wait_ready(settings.STUB_HOST, settings.STUB_PORT)
 
         mock_server_config = Config("mock.fastapi_mock:app", host=settings.MOCK_HOST,
-                               port=settings.MOCK_PORT, log_level="debug")
+                                    port=settings.MOCK_PORT,
+                                    log_level=logging.INFO,
+                                    log_config=logging.basicConfig(
+                                        force=False,
+                                        filename='homework7/mock.log',
+                                        filemode='w',
+                                        level=logging.DEBUG,
+                                        format='%(asctime)s %(levelname)s %(message)s',
+                                    ))
+
         config.instance_mock = UvicornServer(config=mock_server_config)
         config.instance_mock.start()
         wait_ready(settings.MOCK_HOST, settings.MOCK_PORT)
