@@ -131,3 +131,6 @@ dmypy.json
 
 # Allure reports
 allure/
+
+# Macos system files
+.DS_Store
