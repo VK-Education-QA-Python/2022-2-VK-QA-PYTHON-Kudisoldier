@@ -5,6 +5,12 @@ from models.requests_type_count import RequestsTypeModel
 from models.top_frequent_requests import TopFrequentModel
 from models.top_biggest_requests import TopBiggestModel
 from models.top_requests_failed import TopFailedModel
+import os
+
+
+@pytest.fixture()
+def repo_root():
+    return os.path.abspath(os.getcwd())
 
 
 def pytest_configure(config):
@@ -13,11 +19,11 @@ def pytest_configure(config):
         database_client.create_db()
     database_client.connect(db_created=True)
     if not hasattr(config, 'workerinput'):
-        database_client.create_table(CountRequestsModel.__tablename__)
-        database_client.create_table(RequestsTypeModel.__tablename__)
-        database_client.create_table(TopFrequentModel.__tablename__)
-        database_client.create_table(TopBiggestModel.__tablename__)
-        database_client.create_table(TopFailedModel.__tablename__)
+        tables = [CountRequestsModel.__tablename__, RequestsTypeModel.__tablename__,
+                  TopFrequentModel.__tablename__, TopBiggestModel.__tablename__,
+                  TopFailedModel.__tablename__]
+        for table in tables:
+            database_client.create_table(table)
 
     config.database_client = database_client
 
