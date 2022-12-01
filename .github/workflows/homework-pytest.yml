@@ -29,4 +29,4 @@ jobs:
       if: github.ref_name == 'homework3' ||
           github.ref_name == 'homework7'
       run: |
-        whereis pytest
+        sudo /opt/hostedtoolcache/Python/3.10.8/x64/bin/pytest ${{ steps.extract_branch.outputs.branch }} -n2
