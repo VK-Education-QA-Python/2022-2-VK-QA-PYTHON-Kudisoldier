@@ -29,4 +29,4 @@ jobs:
       if: github.ref_name == 'homework3' ||
           github.ref_name == 'homework7'
       run: |
-        sudo echo 'asd'
+        whereis pytest
