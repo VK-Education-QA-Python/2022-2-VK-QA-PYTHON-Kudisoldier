@@ -28,4 +28,4 @@ jobs:
       if: github.ref_name == 'homework3' ||
           github.ref_name == 'homework7'
       run: |
-        sudo pytest ${{ steps.extract_branch.outputs.branch }} -n2
+        sudo python3 -m pytest ${{ steps.extract_branch.outputs.branch }} -n2
