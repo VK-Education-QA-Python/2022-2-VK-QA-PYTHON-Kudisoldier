@@ -61,10 +61,3 @@ def get_user_id_by_name(response: Response, name: str):
     else:
         response.status_code = 404
         return f'User_name {name} not found'
-
-
-
-# @app.put("/items/{item_id}")
-# def update_item(item_id: int, user: User):
-#     return {"item_name": user.name, "item_id": item_id}
-
