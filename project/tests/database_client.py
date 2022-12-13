@@ -37,5 +37,11 @@ class DatabaseClient:
         self.session.commit()
 
     def get_user(self, username):
-        return self.session.query(UserModel).where(UserModel.username==username).all()
+        self.session.commit()
+        return self.session.query(UserModel).where(UserModel.username == username).all()
+
+    def block_user(self, username):
+        current_user = self.session.execute(sqlalchemy.select(UserModel).filter_by(username=username)).scalar_one()
+        current_user.access = 0
+        self.session.commit()
 

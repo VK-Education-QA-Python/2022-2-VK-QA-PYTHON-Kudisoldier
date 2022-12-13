@@ -5,6 +5,7 @@ from pages.reg_page import RegistrationPage
 from pages.welcome_page import WelcomePage
 from database_client import DatabaseClient
 from api.api_client import ApiClient
+from api.mock_api_client import MockApiClient
 from utils import generate_user_data
 import allure
 
@@ -33,6 +34,13 @@ def client(request):
     yield client
 
 
+@allure.title("Mock api client init")
+@pytest.fixture()
+def mock_client():
+    mock_client = MockApiClient()
+    yield mock_client
+
+
 @pytest.fixture()
 def config_params(request):
     vnc = request.config.getoption("--vnc")
@@ -42,8 +50,8 @@ def config_params(request):
 def pytest_configure(config):
     database_client = DatabaseClient('127.0.0.1', '3306', 'test_qa', 'qa_test', 'myappdb')
     database_client.connect()
-    if not hasattr(config, 'workerinput'): ...
-        #database_client.truncate_table('test_users')
+    if not hasattr(config, 'workerinput'):
+        database_client.truncate_table('test_users')
     config.database_client = database_client
 
 

@@ -7,7 +7,7 @@ class UserModel(Base):
     __table_arg__ = {'mysql_charset': 'utf8'}
 
     def __repr__(self):
-        return f'{self.username} {self.name} {self.active}'
+        return f'{self.username} {self.name} {self.active} {self.password} {self.access}'
 
     def __init__(self, name, surname, middle_name, username, password, email, access, active, start_active_time):
         self.name = name

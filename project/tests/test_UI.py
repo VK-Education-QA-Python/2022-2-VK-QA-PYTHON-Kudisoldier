@@ -61,6 +61,7 @@ def test_registration(reg_page):
 
 
 @pytest.mark.UI
+@pytest.mark.API
 def test_logout(welcome_page, database_client, client):
     """
     Предусловия:
@@ -90,4 +91,134 @@ def test_logout(welcome_page, database_client, client):
         login_page = welcome_page.click_logout_button()
         assert login_page.check_page()
         assert int(str(database_client.get_user(username)[0]).split()[2]) == 0
+
+
+@pytest.mark.UI
+@pytest.mark.API
+def test_vkid(welcome_page, database_client, client, mock_client):
+    """
+    Предусловия:
+    Пользователь уже авторизован в системе
+
+    Пользователь есть в БД mock’a
+
+    Шаги:
+    1. Перейти на главную страницу /welcome
+
+    Ожидаемый результат:
+    1. В правом верхнем углу будет присутствовать **VK ID: <id>**
+
+    :param welcome_page:
+    :param database_client:
+    :param client:
+    :param mock_client:
+    :return:
+    """
+    with allure.step("Create new user through API"):
+        name, surname, username, email, password, middle_name,\
+        access, active, start_active_time = generate_user_data()
+        res = client.add(name, surname, middle_name, username, password, email)
+        assert res.status_code == 210
+    with allure.step("Add for created user vk id in mock"):
+        vk_id = 5
+        assert mock_client.put(username, vk_id).status_code == 201
+        assert mock_client.get(username).json['vk_id'] == vk_id
+    with allure.step("Assert that user have vk id"):
+        session = client.get_session_cookie(username, password)
+        welcome_page.driver_load_requests_session(session)
+        welcome_page.open()
+        assert welcome_page.get_login_name_data().find(f'VK ID: {vk_id}') != -1
+    with allure.step("Delete vk id from mock"):
+        assert mock_client.delete(username).status_code == 204
+    with allure.step("Reload page and ensure that vkid isn't displayed"):
+        welcome_page.reload_page()
+        assert welcome_page.get_login_name_data().find(f'VK ID: {vk_id}') == -1
+
+
+@pytest.mark.UI
+@pytest.mark.API
+def test_block(welcome_page, database_client, client):
+    """
+    Предусловия:
+    Пользователь уже есть в БД
+
+    Шаги:
+    1. Зайти на главную страницу по адресу /welcome
+    2. Заблокировать пользователя через ручку `api/user/{username}/block`
+
+    Ожидаемый результат:
+    1. Откроется главная страница приложения
+    2. Пользователь выйдет из сессии и больше не сможет пользоваться сайтом
+
+    :param welcome_page:
+    :param database_client:
+    :param client:
+    :return:
+    """
+    with allure.step("Create new user through API"):
+        name, surname, username, email, password, middle_name,\
+        access, active, start_active_time = generate_user_data()
+        res = client.reg(name, surname, middle_name, username, password, email)
+        assert res.status_code == 200
+    with allure.step("Open welcome page"):
+        session = client.get_session_cookie(username, password)
+        welcome_page.driver_load_requests_session(session)
+        welcome_page.open()
+    with allure.step("Block user from API"):
+        assert client.block_user(username).status_code == 200
+    with allure.step("Ensure that user blocked in database"):
+        assert int(str(database_client.get_user(username)[0]).split()[4]) == 0
+    with allure.step("Ensure that user cannot access UI"):
+        welcome_page.open()
+        with pytest.raises(AssertionError):
+            assert welcome_page.check_page()
+
+
+@pytest.mark.API
+@pytest.mark.UI
+def test_unblock(welcome_page, database_client, client):
+    """
+    Предусловия:
+    Пользователь уже есть в БД
+    Пользователь уже заблокирован
+
+    Шаги:
+
+    1. Разблокировать пользователя через ручку `api/user/{username}/accept`
+    2. Войти в приложение с данными разблокированного пользователя
+
+    Ожидаемый результат:
+    1. Пользователю не будут доступны функции приложения и его выкинет на экран входа
+    2. Пользователь успешно войдет в систему и сможет пользоваться функционалом
+
+    :param welcome_page:
+    :param database_client:
+    :param client:
+    :return:
+    """
+    with allure.step("Create new user through API"):
+        name, surname, username, email, password, middle_name,\
+        access, active, start_active_time = generate_user_data()
+        res = client.reg(name, surname, middle_name, username, password, email)
+        assert res.status_code == 200
+    with allure.step("Block user from DB"):
+        database_client.block_user(username)
+    with allure.step("Open welcome page"):
+        session = client.get_session_cookie(username, password)
+        welcome_page.driver_load_requests_session(session)
+        welcome_page.open()
+    with allure.step("Ensure that user cannot access UI"):
+        with pytest.raises(AssertionError):
+            assert welcome_page.check_page()
+    with allure.step("Unblock user with API"):
+        name2, surname2, username2, email2, password2, middle_name2,\
+        access2, active2, start_active_time2 = generate_user_data()
+        assert client.reg(name2, surname2, middle_name2, username2, password2, email2).status_code == 200
+        assert client.unblock_user(username).status_code == 200
+    with allure.step("Login again and check that everything is OK"):
+        assert client.login(username, password).status_code == 200
+        session = client.get_session_cookie(username, password)
+        welcome_page.driver_load_requests_session(session)
+        welcome_page.open()
+        assert welcome_page.check_page()
 

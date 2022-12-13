@@ -61,3 +61,10 @@ class BasePage:
 
     def check_page(self):
         return self.driver.current_url == self.url
+
+    def get_element_html(self, locator):
+        element = self.driver.find_element(*locator)
+        return element.get_attribute('innerHTML')
+
+    def reload_page(self):
+        self.driver.refresh()

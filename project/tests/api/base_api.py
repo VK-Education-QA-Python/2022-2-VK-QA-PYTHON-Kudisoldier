@@ -13,7 +13,7 @@ class ApiResponse:
 
 class BaseApi:
     def __init__(self):
-        self.base_url = 'http://127.0.0.1:1000/'
+        self.base_url = None
         self.session = requests.Session()
 
     def _request(self, method: str, url: str, **kwargs) -> ApiResponse:
