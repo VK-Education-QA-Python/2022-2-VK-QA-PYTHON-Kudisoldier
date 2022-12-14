@@ -60,4 +60,3 @@ def test_change_password(client, database_client):
         assert res.status_code == 204  # why is so 204??
     with allure.step("Ensure that user password changed in database"):
         assert str(database_client.get_user(username)[0]).split()[3] == new_password
-

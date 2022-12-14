@@ -52,7 +52,7 @@ services:
     hostname: selenoidhost
     image: aerokube/selenoid:latest-release
     command:
-      -service-startup-timeout 1m
+      -service-startup-timeout 30s
       -container-network appnet
     privileged: true
     volumes:

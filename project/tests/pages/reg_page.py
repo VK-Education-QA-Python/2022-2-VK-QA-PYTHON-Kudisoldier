@@ -14,6 +14,7 @@ class RegistrationPage(BasePage):
         return result
 
     def register(self, name, surname, middle_name, username, email, password):
+        from pages.welcome_page import WelcomePage
         self.fill_input(self.locators.USER_NAME_INPUT, name)
         self.fill_input(self.locators.USER_SURNAME_INPUT, surname)
         self.fill_input(self.locators.USER_MIDDLE_NAME_INPUT, middle_name)
@@ -21,8 +22,9 @@ class RegistrationPage(BasePage):
         self.fill_input(self.locators.EMAIL_INPUT, email)
         self.fill_input(self.locators.PASSWORD_INPUT, password)
         self.fill_input(self.locators.PASSWORD_CONFIRM_INPUT, password)
+        self.click(self.locators.RULES_CONFIRM_CHECKBOX)
         result = self.click_register_button()
         if result == 'not found':
-            return 'success'
+            return WelcomePage(self.driver)
         else:
             return 'error'

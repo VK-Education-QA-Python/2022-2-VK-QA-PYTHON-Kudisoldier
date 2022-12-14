@@ -57,7 +57,12 @@ def test_registration(reg_page):
     with allure.step("Create new user through UI"):
         name, surname, username, email, password, middle_name,\
         access, active, start_active_time = generate_user_data()
-        assert reg_page.register(name, surname, middle_name, username, password, email) == 'success'
+        welcome_page = reg_page.register(name, surname, middle_name, username, email, password)
+        assert welcome_page.check_page()
+    with allure.step("Ensure that entered data is matched with welcome page"):
+        login_name_data = welcome_page.get_login_name_data()
+        assert login_name_data.find(f'Logged as {username}') != -1
+        assert login_name_data.find(f'User:  {name} {surname}') != -1
 
 
 @pytest.mark.UI

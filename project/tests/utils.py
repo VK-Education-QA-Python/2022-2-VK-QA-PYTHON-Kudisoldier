@@ -15,4 +15,3 @@ def generate_user_data():
     active = 1
     start_active_time = None
     return name, surname, username, email, password, middle_name, access, active, start_active_time
-

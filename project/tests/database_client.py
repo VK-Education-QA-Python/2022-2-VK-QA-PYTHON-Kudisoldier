@@ -44,4 +44,3 @@ class DatabaseClient:
         current_user = self.session.execute(sqlalchemy.select(UserModel).filter_by(username=username)).scalar_one()
         current_user.access = 0
         self.session.commit()
-
