@@ -1,0 +1,84 @@
+services:
+  mysqldb:
+    image: mysql:latest
+    hostname: appmysqldb
+    container_name: mysqldb
+    environment:
+      MYSQL_ROOT_PASSWORD: 'pass'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+    command: --init-file /data/application/init.sql
+    volumes:
+        - ./init.sql:/data/application/init.sql
+    networks:
+      - appnet
+
+  vk_api:
+    hostname: vk_id_mock
+    container_name: vk_api
+    image: vk_api:latest
+    ports:
+      - '777:777'
+    expose:
+      - '777'
+    networks:
+      - appnet
+
+  myapp:
+    hostname: myapphost
+    container_name: myapp
+    image: myapp:latest
+    volumes:
+      - ./app/config.ini:/etc/config.ini
+    ports:
+      - '1000:1000'
+    expose:
+      - '1000'
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+    networks:
+      - appnet
+    command: bash -c "./myapp /app/myapp --config=/etc/config.ini"
+
+  selenoid:
+    container_name: selenoid
+    hostname: selenoidhost
+    image: aerokube/selenoid:latest-release
+    command:
+      -service-startup-timeout 30s
+      -container-network appnet
+    privileged: true
+    volumes:
+      - ./selenoid/config/:/etc/selenoid/:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - '4444:4444'
+    expose:
+      - '4444'
+    networks:
+      - appnet
+
+  selenoid-ui:
+    image: aerokube/selenoid-ui
+    container_name: selenoid-ui
+    command:
+      --selenoid-uri=http://selenoid:4444
+    ports:
+      - '8080:8080'
+    expose:
+      - '8080'
+    networks:
+      - appnet
+
+networks:
+  appnet:
+    external: false
+    name: appnet
+    driver: bridge

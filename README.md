@@ -166,7 +166,6 @@ Features:
 - test written with pytest
 - used MySql database
 
-
 ## Homework 7 - Http mock
 Steps to run homework7:
 ```

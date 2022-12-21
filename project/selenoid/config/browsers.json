@@ -1,0 +1,13 @@
+{
+    "chrome": {
+        "default": "chrome",
+        "versions": {
+            "100.0": {
+                "image": "sskorol/selenoid_chromium_vnc:100.0",
+                "port": "4444",
+                "path": "/",
+                "privileged": true
+            }
+        }
+    }
+}
